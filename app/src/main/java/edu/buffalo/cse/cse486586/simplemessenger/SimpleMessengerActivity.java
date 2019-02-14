@@ -2,6 +2,7 @@ package edu.buffalo.cse.cse486586.simplemessenger;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -156,6 +157,14 @@ public class SimpleMessengerActivity extends Activity {
              * TODO: Fill in your server code that receives messages and passes them
              * to onProgressUpdate().
              */
+
+            Socket socket = serverSocket.accept();
+            InputStream is = socket.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String messageFromClient = br.readLine();
+
+            onProgressUpdate(messageFromClient);
+
             return null;
         }
 
@@ -218,7 +227,10 @@ public class SimpleMessengerActivity extends Activity {
                  */
 
                 OutputStream os = socket.getOutputStream();
-                os.write(msgToSend);
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os));
+
+                bw.write(msgToSend);
+                bw.flush();
 
                 socket.close();
             } catch (UnknownHostException e) {
